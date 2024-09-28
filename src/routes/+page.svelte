@@ -2,19 +2,23 @@
 	import { onMount } from 'svelte';
 	import LazyLoad from '../components/LazyLoad.svelte';
   import * as bidskeys from '$lib/bidskeys';
+	import NiiVue from '../components/NiiVue.svelte';
 
-	const URL_REPLACE = '/ocean/projects/med220004p/rupprech/hbn_niftyone/';
-	const URL_BASE = 'https://fcp-indi.s3.amazonaws.com/data/Projects/HBN/NiftyOne/';
+  const URL_JSON_B2T = "hbn_full.json";
+	const URL_REPLACE = '';
+	//const URL_BASE = 'https://fcp-indi.s3.amazonaws.com/data/Projects/HBN/NiftyOne/';
+	const URL_BASE = 'https://fcp-indi.s3.amazonaws.com/data/Projects/HBN/MRI/';
+
 
 
   function format_bids_tag(b2t: any, entity: string, key: string) {
-    const val = b2t[entity][key];
+    const val = b2t?.[entity]?.[key];
     return val ? `${bidskeys.ENTITY_TO_EMOJI[entity]} ${val}` : null;
   }
 
 	let images: any[] = [];
 	onMount(async () => {
-		const x = await fetch('hbn.json');
+		const x = await fetch(URL_JSON_B2T);
 		const b2t = await x.json();
 
 		images = Object.keys(b2t[bidskeys.ENT_SUB]).map((key) => ({
@@ -38,6 +42,8 @@
 						<video controls>
 							<source src={image.src} type="video/mp4" />
 						</video>
+          {:else if image.src.endsWith('nii.gz')}
+            <NiiVue niftiPath={image.src} />
 					{/if}
 				  <div class="labelcaption">
             <span>{image.caption}</span>
@@ -79,6 +85,11 @@
     border-radius: 8px;
     background-color: #f0f0f022;
     transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+  }
+
+  .gallery-item :nth-child(0) {
+    width: 100%;
+    height: 100%;
   }
 
   .gallery-item img, .gallery-item video {
