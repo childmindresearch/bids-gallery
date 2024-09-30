@@ -7,6 +7,7 @@
   let nv: Niivue | null = null;
   let canvasContainer: HTMLDivElement;
   let isHovering = false;
+  let resizeObserver: ResizeObserver | null = null
 
   function handleMouseEnter() {
     isHovering = true;
@@ -16,6 +17,14 @@
   function handleMouseLeave() {
     isHovering = false;
     destroyCanvas();
+  }
+
+  function resizeListener(canvas: HTMLCanvasElement) {
+    if (!nv) return;
+    const {width, height} = canvas.parentElement?.getBoundingClientRect() || {width: 200, height: 200};
+    canvas.width = width;
+    canvas.height = height;
+    nv.drawScene()
   }
 
   function createCanvas() {
@@ -29,10 +38,17 @@
       //crosshairColor: [1, 0, 0, 1],
       multiplanarLayout: MULTIPLANAR_TYPE.GRID,
       isNearestInterpolation: true,  // does this actually do something?
+
+      // need to disable this to be able to dispose
+      isResizeCanvas: false,
+      isHighResolutionCapable: false,
     });
 
     nv.attachToCanvas(canvas);
 
+    resizeObserver = new ResizeObserver(() => resizeListener(canvas));
+    resizeObserver.observe(canvasContainer);
+    
     if (niftiPath) {
       nv.loadVolumes([
         {
@@ -46,7 +62,6 @@
 
   function destroyCanvas() {
     if (nv) {
-      //nv.destroy();
       nv = null;
     }
     while (canvasContainer.firstChild) {
@@ -57,7 +72,11 @@
 
   onDestroy(() => {
     if (nv) {
-      //nv.destroy();
+      nv = null;
+    }
+    if (resizeObserver) {
+      resizeObserver.disconnect();
+      resizeObserver = null;
     }
   });
 </script>
