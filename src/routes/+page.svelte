@@ -9,11 +9,13 @@
 	//const URL_BASE = 'https://fcp-indi.s3.amazonaws.com/data/Projects/HBN/NiftyOne/';
 	const URL_BASE = 'https://fcp-indi.s3.amazonaws.com/data/Projects/HBN/MRI/';
 
-
-
   function format_bids_tag(b2t: any, entity: string, key: string) {
     const val = b2t?.[entity]?.[key];
     return val ? `${bidskeys.ENTITY_TO_EMOJI[entity]} ${val}` : null;
+  }
+
+  function get_extension(filename: string) {
+    return filename.substring(filename.lastIndexOf('.') + 1);
   }
 
 	let images: any[] = [];
@@ -44,6 +46,8 @@
 						</video>
           {:else if image.src.endsWith('nii.gz')}
             <NiiVue niftiPath={image.src} />
+          {:else}
+            <div class="hover-message">{get_extension(image.src)}-file</div>
 					{/if}
 				  <div class="labelcaption">
             <span>{image.caption}</span>
@@ -102,10 +106,20 @@
     transform: translate(-50%, -50%); /* Center the media */
   }
 
+  .hover-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    color: #aaa;
+    font-weight: 600;
+  }
+
   .gallery-item:hover {
-  transform: scale(1.05); /* Slightly enlarge the item */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Add a soft shadow for highlighting */
-}
+    transform: scale(1.05); /* Slightly enlarge the item */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Add a soft shadow for highlighting */
+  }
 
   .gallery-item:hover .labelcaption,
   .gallery-item:hover .label {
