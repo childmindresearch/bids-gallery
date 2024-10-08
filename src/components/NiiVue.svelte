@@ -3,6 +3,7 @@
   import { Niivue, MULTIPLANAR_TYPE } from "../../node_modules/@niivue/niivue/dist/";
 
   export let niftiPath: string = "";
+  export let thumbnailPath: string = "";
 
   let nv: Niivue | null = null;
   let canvasContainer: HTMLDivElement;
@@ -81,6 +82,7 @@
   });
 </script>
 
+<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div 
   bind:this={canvasContainer} 
   class="canvas-container"
@@ -88,7 +90,8 @@
   on:mouseleave={handleMouseLeave}
 >
   {#if !isHovering}
-    <div class="hover-message">Hover to view</div>
+    <!-- svelte-ignore a11y-missing-attribute -->
+    <img src={thumbnailPath} />
   {/if}
 </div>
 
@@ -105,5 +108,14 @@
     transform: translate(-50%, -50%);
     font-size: 18px;
     color: #888;
+  }
+  .canvas-container img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Ensure image/video covers the entire area */
+    transform: translate(-50%, -50%); /* Center the media */
   }
 </style>

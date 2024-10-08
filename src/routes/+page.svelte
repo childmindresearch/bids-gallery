@@ -45,7 +45,7 @@
 							<source src={image.src} type="video/mp4" />
 						</video>
           {:else if image.src.endsWith('nii.gz')}
-            <NiiVue niftiPath={image.src} />
+            <NiiVue niftiPath={image.src} thumbnailPath={image.src.replace("Projects/HBN","Projects/HBN/NiftyOne/thumbnails/HBN").replace(".nii.gz", ".webp")} />
           {:else}
             <div class="hover-message">{get_extension(image.src)}-file</div>
 					{/if}
