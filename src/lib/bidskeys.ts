@@ -129,3 +129,54 @@ export const ENTITY_TO_EMOJI: { [key: string]: string } = {
     [FINFO_LINK_TARGET]: '🔗',        // Link target
     [FINFO_MOD_TIME]: '⏲️',         // Modification time
   };
+
+// Mapping of all BIDS-related constants to human-readable tags
+export const ENTITY_TO_TAG: { [key: string]: string } = {
+    // Dataset-related entities
+    [DS_DATASET]: 'Dataset',
+    [DS_DATASET_TYPE]: 'Dataset Type',
+    [DS_DATASET_PATH]: 'Dataset Path',
+    [DS_DATASET_DESCRIPTION]: 'Description',
+  
+    // Entity-related entities
+    [ENT_SUB]: 'Subject',
+    [ENT_SES]: 'Session',
+    [ENT_SAMPLE]: 'Sample',
+    [ENT_TASK]: 'Task',
+    [ENT_ACQ]: 'Acquisition',
+    [ENT_CE]: 'Contrast Enhanced',
+    [ENT_TRC]: 'Tracer',
+    [ENT_STAIN]: 'Stain',
+    [ENT_REC]: 'Recording',
+    [ENT_DIR]: 'Direction',
+    [ENT_RUN]: 'Run',
+    [ENT_MOD]: 'Modality',
+    [ENT_ECHO]: 'Echo',
+    [ENT_FLIP]: 'Flip',
+    [ENT_INV]: 'Inversion',
+    [ENT_MT]: 'Magnetization Transfer',
+    [ENT_PART]: 'Part',
+    [ENT_PROC]: 'Process',
+    [ENT_HEMI]: 'Hemisphere',
+    [ENT_SPACE]: 'Space',
+    [ENT_SPLIT]: 'Split',
+    [ENT_RECORDING]: 'Recording',
+    [ENT_CHUNK]: 'Chunk',
+    [ENT_ATLAS]: 'Atlas',
+    [ENT_RES]: 'Resolution',
+    [ENT_DEN]: 'Density',
+    [ENT_LABEL]: 'Label',
+    [ENT_DESC]: 'Description',
+    [ENT_DATATYPE]: 'Datatype',
+    [ENT_SUFFIX]: 'Suffix',
+    [ENT_EXT]: 'Extension',
+    [ENT_EXTRA_ENTITIES]: 'Extra Entities',
+  
+    // Metadata-related entities
+    [META_JSON]: 'JSON Metadata',
+  
+    // File information-related entities
+    [FINFO_FILE_PATH]: 'File Path',
+    [FINFO_LINK_TARGET]: 'Link Target',
+    [FINFO_MOD_TIME]: 'Modification Time',
+};

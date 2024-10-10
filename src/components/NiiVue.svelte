@@ -1,31 +1,20 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { Niivue, MULTIPLANAR_TYPE } from "../../node_modules/@niivue/niivue/dist/";
+  import { Niivue, MULTIPLANAR_TYPE, SHOW_RENDER } from "../../node_modules/@niivue/niivue/dist/";
+
 
   export let niftiPath: string = "";
-  export let thumbnailPath: string = "";
 
   let nv: Niivue | null = null;
   let canvasContainer: HTMLDivElement;
-  let isHovering = false;
-  let resizeObserver: ResizeObserver | null = null
-
-  function handleMouseEnter() {
-    isHovering = true;
-    createCanvas();
-  }
-
-  function handleMouseLeave() {
-    isHovering = false;
-    destroyCanvas();
-  }
+  let resizeObserver: ResizeObserver | null = null;
 
   function resizeListener(canvas: HTMLCanvasElement) {
     if (!nv) return;
     const {width, height} = canvas.parentElement?.getBoundingClientRect() || {width: 200, height: 200};
     canvas.width = width;
     canvas.height = height;
-    nv.drawScene()
+    nv.drawScene();
   }
 
   function createCanvas() {
@@ -36,16 +25,20 @@
     canvasContainer.appendChild(canvas);
 
     nv = new Niivue({
-      //crosshairColor: [1, 0, 0, 1],
       multiplanarLayout: MULTIPLANAR_TYPE.GRID,
-      isNearestInterpolation: true,  // does this actually do something?
-
-      // need to disable this to be able to dispose
+      isNearestInterpolation: true,
       isResizeCanvas: false,
       isHighResolutionCapable: false,
+      backColor: [0, 0, 0, 1],
     });
+    nv.onLocationChange = (l) => handleLocationChange(l);
 
     nv.attachToCanvas(canvas);
+    nv.setRadiologicalConvention(false);
+    nv.graph.autoSizeMultiplanar = true;
+    nv.opts.multiplanarShowRender = SHOW_RENDER.ALWAYS;
+    nv.graph.opacity = 1.0;
+    nv.graph.normalizeValues = true;
 
     resizeObserver = new ResizeObserver(() => resizeListener(canvas));
     resizeObserver.observe(canvasContainer);
@@ -55,21 +48,19 @@
         {
           url: niftiPath,
           colorMap: "gray",
-          opacity: 1.0
+          opacity: 1.0,
         }
       ]);
     }
   }
 
-  function destroyCanvas() {
-    if (nv) {
-      nv = null;
-    }
-    while (canvasContainer.firstChild) {
-      canvasContainer.removeChild(canvasContainer.firstChild);
-    }
-    canvasContainer.removeAttribute("style"); // for some reason niivue sets background-color to back here
+  function handleLocationChange(data: any) {
+    console.log(data.string);
   }
+
+  onMount(() => {
+    createCanvas();
+  });
 
   onDestroy(() => {
     if (nv) {
@@ -82,40 +73,12 @@
   });
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<div 
-  bind:this={canvasContainer} 
-  class="canvas-container"
-  on:mouseenter={handleMouseEnter}
-  on:mouseleave={handleMouseLeave}
->
-  {#if !isHovering}
-    <!-- svelte-ignore a11y-missing-attribute -->
-    <img src={thumbnailPath} />
-  {/if}
-</div>
+<div bind:this={canvasContainer} class="canvas-container"></div>
 
 <style>
   .canvas-container {
     width: 100%;
     height: 100%;
     position: relative;
-  }
-  .hover-message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 18px;
-    color: #888;
-  }
-  .canvas-container img {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* Ensure image/video covers the entire area */
-    transform: translate(-50%, -50%); /* Center the media */
   }
 </style>
